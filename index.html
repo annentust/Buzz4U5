@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buzz 4 Unit 5 School Adventure & Rules Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Quicksand', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    colors: {
+                        schoolBlue: '#00D2FC',
+                        schoolGreen: '#00F5D4',
+                        schoolYellow: '#FEE440',
+                        schoolPink: '#F15BB5',
+                        schoolPurple: '#9B5DE5',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Quicksand', 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #ede9fe 100%);
+            min-height: 100vh;
+        }
+        .bouncy {
+            animation: bounce 0.5s ease-in-out infinite alternate;
+        }
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-6px); }
+        }
+        .correct-pop {
+            animation: popSuccess 0.4s ease-out;
+        }
+        @keyframes popSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); filter: brightness(1.1); }
+            100% { transform: scale(1); }
+        }
+        .shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        /* Custom scrollbar for definition list */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden text-slate-800 flex flex-col justify-between">
+
+    <header class="w-full bg-white/80 backdrop-blur-md shadow-sm border-b border-purple-100 py-3 px-6 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="showScreen('lobby-screen')">
+                <div class="w-10 h-10 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center text-white text-xl font-bold shadow-md shadow-purple-200">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Buzz 4 Unit 5</h1>
+                    <p class="text-xs text-slate-500 font-medium">校園冒險與規則挑戰</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="bg-indigo-50 px-4 py-1.5 rounded-full flex items-center gap-2 border border-indigo-100">
+                    <i class="fa-solid fa-star text-amber-400 bouncy"></i>
+                    <span class="text-sm font-bold text-indigo-700">得分: <span id="total-score">0</span></span>
+                </div>
+                <button onclick="resetGameProgress()" class="text-xs text-slate-400 hover:text-rose-500 transition-colors py-1 px-2 rounded-lg hover:bg-rose-50 flex items-center gap-1">
+                    <i class="fa-solid fa-arrows-rotate"></i> 重玩
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 py-6 md:py-10">
+        
+        <!-- Screen 1: Lobby Screen -->
+        <section id="lobby-screen" class="screen block transition-all duration-300">
+            <div class="text-center mb-8 max-w-2xl mx-auto">
+                <span class="bg-indigo-100 text-indigo-700 text-xs px-4 py-1.5 rounded-full font-bold uppercase tracking-wider">互動數位學習遊戲</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold mt-3 text-slate-800 leading-tight">準備好開啟你的<br class="md:hidden"><span class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">校園大挑戰</span>了嗎？ ✨</h2>
+                <p class="text-sm md:text-base text-slate-500 mt-2">完成以下四項有趣的數位挑戰，收集星星徽章，成為校園規則與通學達人！</p>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <!-- Task 1 Card -->
+                <div onclick="startTask1()" class="group bg-white rounded-3xl p-6 border-2 border-slate-100 shadow-xl hover:shadow-2xl hover:border-sky-300 transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                    <div>
+                        <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center text-xl mb-4 font-bold shadow-inner">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 group-hover:text-sky-600 transition-colors">1. 空間對對碰</h3>
+                        <p class="text-xs text-slate-500 mt-1 mb-4 leading-relaxed">挑戰單字與地圖定義配對！熟記校園各種機能空間（例如：圖書館、體育館、辦公室等）。</p>
+                    </div>
+                    <div class="flex items-center justify-between mt-4">
+                        <span id="badge-task1" class="bg-slate-100 text-slate-400 text-xs font-bold px-3 py-1 rounded-full"><i class="fa-regular fa-circle-play mr-1"></i> 未開始</span>
+                        <span class="text-sky-500 text-sm font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">開始挑戰 <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+
+                <!-- Task 2 Card -->
+                <div onclick="startTask2()" class="group bg-white rounded-3xl p-6 border-2 border-slate-100 shadow-xl hover:shadow-2xl hover:border-emerald-300 transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-24 h-24 bg-emerald-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                    <div>
+                        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl mb-4 font-bold shadow-inner">
+                            <i class="fa-solid fa-clipboard-list"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">2. 規則分類大考驗</h3>
+                        <p class="text-xs text-slate-500 mt-1 mb-4 leading-relaxed">區分 MUST (必須) 與 MUST NOT (禁止) 行為。透過滑動卡片來展現你的好習慣！</p>
+                    </div>
+                    <div class="flex items-center justify-between mt-4">
+                        <span id="badge-task2" class="bg-slate-100 text-slate-400 text-xs font-bold px-3 py-1 rounded-full"><i class="fa-regular fa-circle-play mr-1"></i> 未開始</span>
+                        <span class="text-emerald-500 text-sm font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">開始挑戰 <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+
+                <!-- Task 3 Card -->
+                <div onclick="startTask3()" class="group bg-white rounded-3xl p-6 border-2 border-slate-100 shadow-xl hover:shadow-2xl hover:border-pink-300 transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-24 h-24 bg-pink-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                    <div>
+                        <div class="w-12 h-12 bg-pink-100 text-pink-600 rounded-2xl flex items-center justify-center text-xl mb-4 font-bold shadow-inner">
+                            <i class="fa-solid fa-font"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 group-hover:text-pink-600 transition-colors">3. 受格代名詞大挑戰</h3>
+                        <p class="text-xs text-slate-500 mt-1 mb-4 leading-relaxed">精準使用 me, you, him, her, it, us, them 等受格，找出完整語意句子！</p>
+                    </div>
+                    <div class="flex items-center justify-between mt-4">
+                        <span id="badge-task3" class="bg-slate-100 text-slate-400 text-xs font-bold px-3 py-1 rounded-full"><i class="fa-regular fa-circle-play mr-1"></i> 未開始</span>
+                        <span class="text-pink-500 text-sm font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">開始挑戰 <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+
+                <!-- Task 4 Card -->
+                <div onclick="startTask4()" class="group bg-white rounded-3xl p-6 border-2 border-slate-100 shadow-xl hover:shadow-2xl hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-24 h-24 bg-purple-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                    <div>
+                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl mb-4 font-bold shadow-inner">
+                            <i class="fa-solid fa-earth-americas"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 group-hover:text-purple-600 transition-colors">4. 全球交通問答派對</h3>
+                        <p class="text-xs text-slate-500 mt-1 mb-4 leading-relaxed">你知道加拿大和瑞士的小孩是怎麼去上學的嗎？考驗你對課文細節的了解！</p>
+                    </div>
+                    <div class="flex items-center justify-between mt-4">
+                        <span id="badge-task4" class="bg-slate-100 text-slate-400 text-xs font-bold px-3 py-1 rounded-full"><i class="fa-regular fa-circle-play mr-1"></i> 未開始</span>
+                        <span class="text-purple-500 text-sm font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">開始挑戰 <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certificate Section (Unlocks after all games complete) -->
+            <div id="trophy-container" class="mt-12 bg-gradient-to-r from-amber-400 to-orange-500 rounded-3xl p-8 max-w-4xl mx-auto text-white shadow-xl flex flex-col md:flex-row items-center gap-6 justify-between opacity-50 filter grayscale transition-all duration-500">
+                <div class="text-center md:text-left">
+                    <span class="bg-white/20 text-white text-xs px-3 py-1 rounded-full font-bold">終極成就</span>
+                    <h3 class="text-2xl font-black mt-2"><i class="fa-solid fa-trophy mr-1 text-yellow-300 bouncy"></i> 終極大師榮譽勳章</h3>
+                    <p class="text-xs text-white/90 mt-1">完成以上所有 4 個單元的挑戰後即可解鎖專屬大師證書！</p>
+                </div>
+                <button id="claim-btn" disabled onclick="claimReward()" class="bg-white text-orange-600 hover:bg-amber-100 font-extrabold text-sm px-6 py-3 rounded-2xl shadow-md transition-all duration-300 transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fa-solid fa-lock mr-1"></i> 尚未解鎖
+                </button>
+            </div>
+        </section>
+
+
+        <!-- Screen 2: Task 1 - Matching Game -->
+        <section id="task1-screen" class="screen hidden transition-all duration-300">
+            <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-6 border border-slate-100">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <button onclick="showScreen('lobby-screen')" class="w-10 h-10 hover:bg-slate-100 rounded-xl flex items-center justify-center text-slate-500 transition-colors">
+                            <i class="fa-solid fa-chevron-left text-lg"></i>
+                        </button>
+                        <div>
+                            <h2 class="text-xl font-black text-slate-800">關卡 1：校園空間對點配對</h2>
+                            <p class="text-xs text-slate-500">點擊左側「單字」再點擊右側相對應的「英文定義」進行連線配對！</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-bold text-indigo-500 block">配對進度</span>
+                        <span class="text-lg font-black text-indigo-600" id="match-progress">0/9</span>
+                    </div>
+                </div>
+
+                <!-- Word & Definition Match Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+                    <!-- Left Column: Vocabulary Words -->
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-black text-indigo-600 flex items-center gap-2 mb-2">
+                            <span class="w-2 h-4 bg-indigo-500 rounded-full"></span> 
+                            1. 點擊學校空間 (Vocabulary)
+                        </h3>
+                        <div id="vocab-buttons-container" class="grid grid-cols-1 gap-2.5 max-h-[380px] overflow-y-auto pr-1">
+                            <!-- JS will inject word buttons here -->
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Definitions -->
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-black text-pink-500 flex items-center gap-2 mb-2">
+                            <span class="w-2 h-4 bg-pink-500 rounded-full"></span>
+                            2. 配對英文功能定義 (Definition)
+                        </h3>
+                        <div id="def-buttons-container" class="grid grid-cols-1 gap-2.5 max-h-[380px] overflow-y-auto pr-1">
+                            <!-- JS will inject definition buttons here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer with clues and helpers -->
+                <div class="mt-8 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-100 w-full sm:w-auto">
+                        <i class="fa-solid fa-lightbulb text-amber-500 bouncy text-sm"></i>
+                        <span>提示：如果配對成功，卡片會變成亮綠色並隱藏。</span>
+                    </div>
+                    <button id="task1-next-btn" disabled onclick="completeTask1()" class="w-full sm:w-auto bg-slate-200 text-slate-400 font-bold px-8 py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-all cursor-not-allowed">
+                        <span>完成挑戰</span> <i class="fa-solid fa-circle-check"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Screen 3: Task 2 - Categorization / Group Sort -->
+        <section id="task2-screen" class="screen hidden transition-all duration-300">
+            <div class="max-w-xl mx-auto bg-white rounded-3xl shadow-xl p-6 border border-slate-100 relative overflow-hidden">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <button onclick="showScreen('lobby-screen')" class="w-10 h-10 hover:bg-slate-100 rounded-xl flex items-center justify-center text-slate-500 transition-colors">
+                            <i class="fa-solid fa-chevron-left text-lg"></i>
+                        </button>
+                        <div>
+                            <h2 class="text-xl font-black text-slate-800">關卡 2：規則分類大考驗</h2>
+                            <p class="text-xs text-slate-500">判斷此規則應屬於 <span class="font-bold text-emerald-600">MUST (必須)</span> 還是 <span class="font-bold text-rose-500">MUST NOT (禁止)</span> 呢？</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-bold text-emerald-500 block">剩餘卡片</span>
+                        <span class="text-lg font-black text-emerald-600" id="sort-progress">0/11</span>
+                    </div>
+                </div>
+
+                <!-- Deck Arena -->
+                <div class="relative h-[250px] flex items-center justify-center mb-6">
+                    <!-- Cards Stack Placeholder -->
+                    <div id="rule-card" class="w-full h-full max-w-sm bg-gradient-to-tr from-indigo-50 to-purple-50 border-2 border-dashed border-indigo-200 rounded-2xl flex flex-col items-center justify-center p-6 text-center shadow-md relative transition-transform duration-300">
+                        <div class="w-16 h-16 bg-white rounded-full shadow-md flex items-center justify-center mb-4 text-2xl text-purple-600">
+                            <i class="fa-solid fa-scroll"></i>
+                        </div>
+                        <h4 id="rule-text" class="text-lg font-extrabold text-slate-700 leading-normal px-2">...</h4>
+                    </div>
+                    
+                    <!-- Finished Deck Message overlay -->
+                    <div id="rule-finished" class="absolute inset-0 bg-white z-10 flex flex-col items-center justify-center text-center hidden">
+                        <div class="w-16 h-16 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center text-3xl mb-4">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <h4 class="text-xl font-extrabold text-slate-800">全部規則分類完成！</h4>
+                        <p class="text-xs text-slate-400 mt-1">你對班級生活規範瞭若指掌呢！</p>
+                    </div>
+                </div>
+
+                <!-- Categorization Action Buttons -->
+                <div id="sort-actions-container" class="grid grid-cols-2 gap-4">
+                    <button onclick="submitSortAnswer('must')" class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold py-4 px-6 rounded-2xl shadow-md shadow-emerald-100 transition-all active:scale-95 flex flex-col items-center justify-center gap-1">
+                        <span class="text-xs uppercase opacity-80">We</span>
+                        <span class="text-base font-extrabold tracking-wider"><i class="fa-regular fa-circle-check mr-1 text-sm"></i> MUST (Dos)</span>
+                    </button>
+                    
+                    <button onclick="submitSortAnswer('mustNot')" class="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-extrabold py-4 px-6 rounded-2xl shadow-md shadow-rose-100 transition-all active:scale-95 flex flex-col items-center justify-center gap-1">
+                        <span class="text-xs uppercase opacity-80">We</span>
+                        <span class="text-base font-extrabold tracking-wider"><i class="fa-regular fa-circle-xmark mr-1 text-sm"></i> MUST NOT (Don'ts)</span>
+                    </button>
+                </div>
+
+                <!-- Footer with instructions -->
+                <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center">
+                    <span class="text-xs text-slate-400"><i class="fa-solid fa-hand-pointer mr-1"></i> 請點擊綠色或紅色按鈕進行分類</span>
+                    <button id="task2-next-btn" disabled onclick="completeTask2()" class="hidden bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-6 rounded-2xl flex items-center gap-2 transition-all">
+                        <span>完成此關</span> <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Screen 4: Task 3 - Pronoun Multiple Choice -->
+        <section id="task3-screen" class="screen hidden transition-all duration-300">
+            <div class="max-w-xl mx-auto bg-white rounded-3xl shadow-xl p-6 border border-slate-100">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <button onclick="showScreen('lobby-screen')" class="w-10 h-10 hover:bg-slate-100 rounded-xl flex items-center justify-center text-slate-500 transition-colors">
+                            <i class="fa-solid fa-chevron-left text-lg"></i>
+                        </button>
+                        <div>
+                            <h2 class="text-xl font-black text-slate-800">關卡 3：受格代名詞大挑戰</h2>
+                            <p class="text-xs text-slate-500">閱讀情境句子，選出正確的代名詞來填充吧！</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-bold text-pink-500 block">題目進度</span>
+                        <span class="text-lg font-black text-pink-600" id="pronoun-progress">1/6</span>
+                    </div>
+                </div>
+
+                <!-- Question Card -->
+                <div id="pronoun-question-card" class="bg-gradient-to-tr from-slate-50 to-slate-100 border border-slate-100 rounded-2xl p-6 mb-6">
+                    <div class="flex items-center gap-2 mb-2 text-pink-500 text-xs font-bold">
+                        <i class="fa-solid fa-pencil"></i>
+                        <span>受格填空 Multiple Choice</span>
+                    </div>
+                    <p id="pronoun-sentence" class="text-lg font-bold text-slate-800 leading-relaxed">
+                        <!-- JS injects question here -->
+                    </p>
+                </div>
+
+                <!-- Options grid -->
+                <div id="pronoun-options" class="grid grid-cols-2 gap-3 mb-6">
+                    <!-- Option buttons will be dynamically added here -->
+                </div>
+
+                <!-- Footer and Navigation -->
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <span id="pronoun-feedback" class="text-sm font-bold text-slate-400">請選出一個代名詞...</span>
+                    <button id="pronoun-next-btn" disabled onclick="nextPronounQuestion()" class="bg-slate-200 text-slate-400 font-bold py-3 px-6 rounded-2xl flex items-center gap-2 transition-all cursor-not-allowed">
+                        <span>下一題</span> <i class="fa-solid fa-circle-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Screen 5: Task 4 - Global Transportation Quiz -->
+        <section id="task4-screen" class="screen hidden transition-all duration-300">
+            <div class="max-w-xl mx-auto bg-white rounded-3xl shadow-xl p-6 border border-slate-100">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <button onclick="showScreen('lobby-screen')" class="w-10 h-10 hover:bg-slate-100 rounded-xl flex items-center justify-center text-slate-500 transition-colors">
+                            <i class="fa-solid fa-chevron-left text-lg"></i>
+                        </button>
+                        <div>
+                            <h2 class="text-xl font-black text-slate-800">關卡 4：全球交通問答派對</h2>
+                            <p class="text-xs text-slate-500">深入認識加拿大與瑞士孩子的通勤常識與安全！</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-bold text-purple-500 block">題目進度</span>
+                        <span class="text-lg font-black text-purple-600" id="quiz-progress">1/5</span>
+                    </div>
+                </div>
+
+                <!-- Quiz Card -->
+                <div id="quiz-question-card" class="bg-gradient-to-tr from-purple-50 to-indigo-50 border border-purple-100 rounded-2xl p-6 mb-6">
+                    <div class="flex items-center gap-2 mb-2 text-purple-600 text-xs font-bold">
+                        <i class="fa-solid fa-question-circle"></i>
+                        <span>國家交通常識 Q&A</span>
+                    </div>
+                    <p id="quiz-question" class="text-lg font-black text-slate-800 leading-relaxed">
+                        <!-- JS injects quiz question here -->
+                    </p>
+                </div>
+
+                <!-- Quiz Options container -->
+                <div id="quiz-options" class="flex flex-col gap-3 mb-6">
+                    <!-- Option buttons dynamically generated here -->
+                </div>
+
+                <!-- Footer with controls -->
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <span id="quiz-feedback" class="text-sm font-bold text-slate-400">請作答...</span>
+                    <button id="quiz-next-btn" disabled onclick="nextQuizQuestion()" class="bg-slate-200 text-slate-400 font-bold py-3 px-6 rounded-2xl flex items-center gap-2 transition-all cursor-not-allowed">
+                        <span>下一題</span> <i class="fa-solid fa-circle-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Screen 6: Final Reward modal/screen -->
+        <section id="reward-screen" class="screen hidden transition-all duration-300">
+            <div class="max-w-xl mx-auto bg-white rounded-3xl shadow-xl p-8 border border-slate-100 text-center relative overflow-hidden">
+                <canvas id="confetti-canvas" class="absolute inset-0 pointer-events-none w-full h-full"></canvas>
+                
+                <div class="w-24 h-24 bg-gradient-to-tr from-amber-400 to-yellow-300 rounded-full flex items-center justify-center text-5xl text-white mx-auto shadow-lg shadow-amber-100 mb-6 bouncy">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                
+                <span class="bg-amber-100 text-amber-700 text-xs px-4 py-1.5 rounded-full font-bold">CONGRATULATIONS!</span>
+                <h2 class="text-3xl font-black text-slate-800 mt-4">恭喜完成所有挑戰！</h2>
+                <p class="text-sm text-slate-500 mt-2 max-w-md mx-auto">你已成功掌握 Buzz 4 Unit 5 的所有英語學校空間單字、必須/禁止規定、受格代名詞，以及跨國通勤百科常識！</p>
+                
+                <!-- Digital Badge -->
+                <div class="my-8 inline-block bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl p-0.5 shadow-xl">
+                    <div class="bg-slate-900 text-white rounded-[14px] px-8 py-6 flex flex-col items-center">
+                        <div class="text-3xl text-amber-300 mb-1">👑</div>
+                        <span class="text-lg font-extrabold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">Master Certificate</span>
+                        <h4 class="text-xl font-black mt-2 text-white">「校園冒險大師」</h4>
+                        <div class="w-24 h-0.5 bg-gradient-to-r from-indigo-500 to-pink-500 my-3"></div>
+                        <p class="text-xs text-slate-300">Buzz 4 Unit 5 數位遊戲檢定合格</p>
+                        <p class="text-[10px] text-slate-500 mt-1">核發時間：2026/06/22</p>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                    <button onclick="resetGameProgress()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-8 rounded-2xl transition-all shadow-md shadow-indigo-100">
+                        <i class="fa-solid fa-arrows-rotate mr-1"></i> 再玩一次
+                    </button>
+                    <button onclick="showScreen('lobby-screen')" class="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3.5 px-8 rounded-2xl transition-all">
+                        返回大廳
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="w-full bg-slate-900 text-slate-400 py-6 px-4 border-t border-slate-800 text-center text-xs">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <p>© 2026 Buzz 4 Unit 5 英語多功能數位教學資源平台 - 適合國小英語課堂練習</p>
+            <div class="flex items-center gap-4">
+                <span class="hover:text-slate-200 transition-colors cursor-help"><i class="fa-regular fa-compass mr-1"></i> 寓教於樂 雙語學習</span>
+                <span class="hover:text-slate-200 transition-colors cursor-help"><i class="fa-solid fa-gamepad mr-1"></i> 即時回饋</span>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // Audio synthesis context
+        let audioCtx = null;
+        
+        // App Core State
+        const state = {
+            score: 0,
+            tasksCompleted: {
+                task1: false,
+                task2: false,
+                task3: false,
+                task4: false
+            },
+            // Task 1: Matching game selection state
+            t1SelectedWord: null,
+            t1SelectedDef: null,
+            t1MatchesDone: 0,
+            // Task 2: Sorting state
+            t2CurrentCardIndex: 0,
+            // Task 3: Pronouns Quiz state
+            t3CurrentIndex: 0,
+            t3UserAnswers: [],
+            // Task 4: Trivia Quiz state
+            t4CurrentIndex: 0,
+            t4UserAnswers: []
+        };
+
+        // ==========================================
+        // DATA SOURCES (According to user prompt)
+        // ==========================================
+        
+        // 1. Vocabulary with exact definitions from prompt
+        const task1Data = [
+            { id: "1", word: "music room", def: "a room where students learn, listen to, and play music." },
+            { id: "2", word: "art room", def: "a room with art supplies where students draw." },
+            { id: "3", word: "computer room", def: "a room where students learn technology skills." },
+            { id: "4", word: "cafeteria", def: "an indoor dining room; it has an ice cream machine." },
+            { id: "5", word: "hallway", def: "an indoor corridor that connects classrooms." },
+            { id: "6", word: "gym", def: "an indoor room used for physical education (PE) and sports." },
+            { id: "7", word: "field", def: "an outdoor grassy area for sports." },
+            { id: "8", word: "library", def: "a place with huge chairs and sofas to read books." },
+            { id: "9", word: "teachers’ lounge", def: "a room where teachers can rest." }
+        ];
+
+        // 2. Class Rule classifications
+        const task2Data = [
+            { text: "...be kind to other children.", category: "must" },
+            { text: "...listen in class.", category: "must" },
+            { text: "...be on time.", category: "must" },
+            { text: "...share and take turns.", category: "must" },
+            { text: "...sit down on the bus.", category: "must" },
+            { text: "...cross in the crosswalk.", category: "must" },
+            { text: "...shout.", category: "mustNot" },
+            { text: "...run inside / run in the hallway.", category: "mustNot" },
+            { text: "...eat or drink on the big library sofas.", category: "mustNot" },
+            { text: "...eat ice cream every day.", category: "mustNot" },
+            { text: "...run into the street.", category: "mustNot" }
+        ];
+
+        // 3. Pronoun Sentences Multiple Choice
+        const task3Data = [
+            { 
+                sentence: "Jake is lost. I helped ______ find the cafeteria.", 
+                answer: "him", 
+                options: ["him", "her", "it", "them"] 
+            },
+            { 
+                sentence: "Samira helped Ramona pick up ______ books.", 
+                answer: "her", 
+                options: ["me", "her", "him", "us"] 
+            },
+            { 
+                sentence: "The library is amazing. We can sit on the sofas and read books in ______.", 
+                answer: "it", 
+                options: ["them", "her", "it", "you"] 
+            },
+            { 
+                sentence: "I saw Jim and Jack after school. I talked to ______.", 
+                answer: "them", 
+                options: ["him", "them", "us", "you"] 
+            },
+            { 
+                sentence: "A police officer teaches ______ (the students) about crossing the street.", 
+                answer: "us", 
+                options: ["me", "him", "us", "them"] 
+            },
+            { 
+                sentence: "My teacher is Mr. Smith. I like ______.", 
+                answer: "him", 
+                options: ["him", "her", "it", "them"] 
+            }
+        ];
+
+        // 4. Global Transportation Q&A
+        const task4Data = [
+            {
+                question: "How do many kids in Canada go to school?",
+                answer: "By yellow school bus",
+                options: ["By subway", "By yellow school bus", "By boat", "By helicopter"]
+            },
+            {
+                question: "What can kids in big Canadian cities take to school?",
+                answer: "Public transportation (streetcar or subway)",
+                options: ["Airplane", "Public transportation (streetcar or subway)", "Police car", "Only big yellow boats"]
+            },
+            {
+                question: "Kids who live close to school can go ______.",
+                answer: "On foot or by bike",
+                options: ["On foot or by bike", "By high-speed train", "By private shuttle", "Only by horse"]
+            },
+            {
+                question: "What is a fun way to travel and meet friends in Canada?",
+                answer: "By school bus",
+                options: ["By taxi", "By walking alone", "By school bus", "By public train"]
+            },
+            {
+                question: "In Switzerland, who teaches kids about crossing the street?",
+                answer: "A police officer",
+                options: ["A doctor", "A bus driver", "A police officer", "A librarian"]
+            }
+        ];
+
+
+        // ==========================================
+        // SYNTHETIC SOUND EFFECTS (Using Web Audio API)
+        // ==========================================
+        function playSound(type) {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const now = audioCtx.currentTime;
+                
+                if (type === 'click') {
+                    // Quick high-pitched pop
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                } 
+                else if (type === 'success') {
+                    // Beautiful rapid ascending scale
+                    const freqs = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    freqs.forEach((f, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.frequency.setValueAtTime(f, now + idx * 0.08);
+                        gain.gain.setValueAtTime(0.08, now + idx * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.15);
+                        osc.start(now + idx * 0.08);
+                        osc.stop(now + idx * 0.08 + 0.16);
+                    });
+                } 
+                else if (type === 'error') {
+                    // Soft dual-frequency buzz
+                    const osc1 = audioCtx.createOscillator();
+                    const osc2 = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc1.connect(gain);
+                    osc2.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc1.type = 'triangle';
+                    osc2.type = 'triangle';
+                    osc1.frequency.setValueAtTime(140, now);
+                    osc2.frequency.setValueAtTime(143, now);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    osc1.start(now);
+                    osc2.start(now);
+                    osc1.stop(now + 0.25);
+                    osc2.stop(now + 0.25);
+                }
+                else if (type === 'victory') {
+                    // Complete triumphant fan-fare arpeggio
+                    const scale = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+                    scale.forEach((f, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(f, now + idx * 0.06);
+                        gain.gain.setValueAtTime(0.08, now + idx * 0.06);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.3);
+                        osc.start(now + idx * 0.06);
+                        osc.stop(now + idx * 0.06 + 0.3);
+                    });
+                }
+            } catch (err) {
+                console.warn('Web Audio synthesis is blocked or unsupported:', err);
+            }
+        }
+
+
+        // ==========================================
+        // VIEW NAVIGATION CONTROLLERS
+        // ==========================================
+        function showScreen(screenId) {
+            playSound('click');
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => {
+                screen.classList.add('hidden');
+                screen.classList.remove('block');
+            });
+            const activeScreen = document.getElementById(screenId);
+            if (activeScreen) {
+                activeScreen.classList.remove('hidden');
+                activeScreen.classList.add('block');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+
+        // ==========================================
+        // GAME 1: VOCABULARY MATCHING CONTROLLERS
+        // ==========================================
+        function startTask1() {
+            state.t1SelectedWord = null;
+            state.t1SelectedDef = null;
+            state.t1MatchesDone = 0;
+            updateMatchProgressBar();
+            
+            // Randomize lists separately to offer matching layout challenge
+            const shuffledVocab = [...task1Data].sort(() => Math.random() - 0.5);
+            const shuffledDefs = [...task1Data].sort(() => Math.random() - 0.5);
+
+            const vocabContainer = document.getElementById('vocab-buttons-container');
+            const defContainer = document.getElementById('def-buttons-container');
+
+            vocabContainer.innerHTML = '';
+            defContainer.innerHTML = '';
+
+            shuffledVocab.forEach(item => {
+                const btn = document.createElement('button');
+                btn.id = `vocab-${item.id}`;
+                btn.className = "w-full text-left bg-indigo-50 border border-indigo-100 hover:border-indigo-400 p-3.5 rounded-xl text-slate-700 font-bold transition-all text-sm flex items-center justify-between";
+                btn.innerHTML = `<span>${item.word}</span> <span class="text-indigo-300"><i class="fa-solid fa-play"></i></span>`;
+                btn.onclick = () => selectWord(item.id);
+                vocabContainer.appendChild(btn);
+            });
+
+            shuffledDefs.forEach(item => {
+                const btn = document.createElement('button');
+                btn.id = `def-${item.id}`;
+                btn.className = "w-full text-left bg-pink-50 border border-pink-100 hover:border-pink-300 p-3.5 rounded-xl text-slate-700 font-semibold transition-all text-xs leading-relaxed flex items-start gap-2";
+                btn.innerHTML = `<span class="mt-0.5 text-pink-300"><i class="fa-solid fa-tag"></i></span> <span>${item.def}</span>`;
+                btn.onclick = () => selectDef(item.id);
+                defContainer.appendChild(btn);
+            });
+
+            const nextBtn = document.getElementById('task1-next-btn');
+            nextBtn.disabled = true;
+            nextBtn.className = "w-full sm:w-auto bg-slate-200 text-slate-400 font-bold px-8 py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-all cursor-not-allowed";
+
+            showScreen('task1-screen');
+        }
+
+        function selectWord(id) {
+            playSound('click');
+            if (state.t1SelectedWord) {
+                // Remove highlight from old
+                const oldBtn = document.getElementById(`vocab-${state.t1SelectedWord}`);
+                if (oldBtn) oldBtn.classList.remove('bg-indigo-600', 'text-white', 'scale-[1.02]', 'shadow-md');
+            }
+            state.t1SelectedWord = id;
+            const newBtn = document.getElementById(`vocab-${id}`);
+            newBtn.classList.add('bg-indigo-600', 'text-white', 'scale-[1.02]', 'shadow-md');
+            
+            checkForMatch();
+        }
+
+        function selectDef(id) {
+            playSound('click');
+            if (state.t1SelectedDef) {
+                const oldBtn = document.getElementById(`def-${state.t1SelectedDef}`);
+                if (oldBtn) oldBtn.classList.remove('bg-pink-600', 'text-white', 'scale-[1.02]', 'shadow-md');
+            }
+            state.t1SelectedDef = id;
+            const newBtn = document.getElementById(`def-${id}`);
+            newBtn.classList.add('bg-pink-600', 'text-white', 'scale-[1.02]', 'shadow-md');
+
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            if (state.t1SelectedWord && state.t1SelectedDef) {
+                const vocabBtn = document.getElementById(`vocab-${state.t1SelectedWord}`);
+                const defBtn = document.getElementById(`def-${state.t1SelectedDef}`);
+
+                if (state.t1SelectedWord === state.t1SelectedDef) {
+                    // Match Success!
+                    playSound('success');
+                    
+                    // Style as matched green
+                    vocabBtn.className = "w-full text-left bg-emerald-500 border-2 border-emerald-500 text-white p-3.5 rounded-xl font-bold transition-all text-sm flex items-center justify-between correct-pop opacity-60 cursor-default";
+                    vocabBtn.innerHTML = `<span>${vocabBtn.querySelector('span').innerText}</span> <i class="fa-solid fa-circle-check"></i>`;
+                    vocabBtn.onclick = null;
+
+                    defBtn.className = "w-full text-left bg-emerald-500 border-2 border-emerald-500 text-white p-3.5 rounded-xl text-xs leading-relaxed transition-all correct-pop opacity-60 cursor-default";
+                    defBtn.innerHTML = `<span class="mr-1"><i class="fa-solid fa-circle-check"></i></span> <span>${defBtn.querySelectorAll('span')[1].innerText}</span>`;
+                    defBtn.onclick = null;
+
+                    state.t1MatchesDone++;
+                    updateMatchProgressBar();
+                    
+                    // Reset selected pointers
+                    state.t1SelectedWord = null;
+                    state.t1SelectedDef = null;
+
+                    // If all complete
+                    if (state.t1MatchesDone === task1Data.length) {
+                        enableTask1Completion();
+                    }
+                } else {
+                    // Match Failed!
+                    playSound('error');
+                    vocabBtn.classList.add('shake', 'bg-rose-500', 'border-rose-500');
+                    defBtn.classList.add('shake', 'bg-rose-500', 'border-rose-500');
+                    
+                    // Reset visual styling back to normal after animation finish
+                    setTimeout(() => {
+                        vocabBtn.className = "w-full text-left bg-indigo-50 border border-indigo-100 hover:border-indigo-400 p-3.5 rounded-xl text-slate-700 font-bold transition-all text-sm flex items-center justify-between";
+                        vocabBtn.classList.remove('shake', 'bg-rose-500', 'border-rose-500');
+                        vocabBtn.innerHTML = `<span>${task1Data.find(i => i.id === state.t1SelectedWord).word}</span> <span class="text-indigo-300"><i class="fa-solid fa-play"></i></span>`;
+                        
+                        defBtn.className = "w-full text-left bg-pink-50 border border-pink-100 hover:border-pink-300 p-3.5 rounded-xl text-slate-700 font-semibold transition-all text-xs leading-relaxed flex items-start gap-2";
+                        defBtn.classList.remove('shake', 'bg-rose-500', 'border-rose-500');
+                        defBtn.innerHTML = `<span class="mt-0.5 text-pink-300"><i class="fa-solid fa-tag"></i></span> <span>${task1Data.find(i => i.id === state.t1SelectedDef).def}</span>`;
+                        
+                        state.t1SelectedWord = null;
+                        state.t1SelectedDef = null;
+                    }, 500);
+                }
+            }
+        }
+
+        function updateMatchProgressBar() {
+            document.getElementById('match-progress').innerText = `${state.t1MatchesDone}/${task1Data.length}`;
+        }
+
+        function enableTask1Completion() {
+            const nextBtn = document.getElementById('task1-next-btn');
+            nextBtn.disabled = false;
+            nextBtn.className = "w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold px-8 py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-emerald-100";
+        }
+
+        function completeTask1() {
+            if (!state.tasksCompleted.task1) {
+                state.tasksCompleted.task1 = true;
+                addScore(50);
+                updateLobbyBadges();
+            }
+            showScreen('lobby-screen');
+            triggerConfetti();
+        }
+
+
+        // ==========================================
+        // GAME 2: CLASS RULES SORTING CONTROLLERS
+        // ==========================================
+        let shuffledRules = [];
+        function startTask2() {
+            state.t2CurrentCardIndex = 0;
+            // Shuffle classification data on each start
+            shuffledRules = [...task2Data].sort(() => Math.random() - 0.5);
+            
+            document.getElementById('rule-card').classList.remove('hidden');
+            document.getElementById('rule-finished').classList.add('hidden');
+            document.getElementById('sort-actions-container').classList.remove('opacity-40', 'pointer-events-none');
+            
+            const nextBtn = document.getElementById('task2-next-btn');
+            nextBtn.classList.add('hidden');
+            nextBtn.disabled = true;
+
+            updateSortProgress();
+            renderActiveRuleCard();
+            showScreen('task2-screen');
+        }
+
+        function updateSortProgress() {
+            document.getElementById('sort-progress').innerText = `${state.t2CurrentCardIndex}/${shuffledRules.length}`;
+        }
+
+        function renderActiveRuleCard() {
+            if (state.t2CurrentCardIndex < shuffledRules.length) {
+                const item = shuffledRules[state.t2CurrentCardIndex];
+                document.getElementById('rule-text').innerText = item.text;
+                updateSortProgress();
+            } else {
+                // Done!
+                updateSortProgress();
+                document.getElementById('rule-card').classList.add('hidden');
+                document.getElementById('rule-finished').classList.remove('hidden');
+                document.getElementById('sort-actions-container').classList.add('opacity-40', 'pointer-events-none');
+                
+                const nextBtn = document.getElementById('task2-next-btn');
+                nextBtn.classList.remove('hidden');
+                nextBtn.disabled = false;
+            }
+        }
+
+        function submitSortAnswer(selectedCategory) {
+            if (state.t2CurrentCardIndex >= shuffledRules.length) return;
+
+            const item = shuffledRules[state.t2CurrentCardIndex];
+            const cardEl = document.getElementById('rule-card');
+
+            if (item.category === selectedCategory) {
+                // Correct!
+                playSound('success');
+                
+                // Animate swipe matching success direction
+                const translateSign = selectedCategory === 'must' ? '-translate-x-12 rotate-[-6deg]' : 'translate-x-12 rotate-[6deg]';
+                cardEl.className = `w-full h-full max-w-sm bg-emerald-100 border-2 border-emerald-500 rounded-2xl flex flex-col items-center justify-center p-6 text-center shadow-lg relative transition-all duration-200 transform ${translateSign} opacity-50`;
+                
+                setTimeout(() => {
+                    cardEl.className = "w-full h-full max-w-sm bg-gradient-to-tr from-indigo-50 to-purple-50 border-2 border-dashed border-indigo-200 rounded-2xl flex flex-col items-center justify-center p-6 text-center shadow-md relative transition-transform duration-300 scale-95 opacity-0";
+                    
+                    setTimeout(() => {
+                        state.t2CurrentCardIndex++;
+                        renderActiveRuleCard();
+                        cardEl.className = "w-full h-full max-w-sm bg-gradient-to-tr from-indigo-50 to-purple-50 border-2 border-dashed border-indigo-200 rounded-2xl flex flex-col items-center justify-center p-6 text-center shadow-md relative transition-transform duration-300";
+                    }, 100);
+                }, 200);
+
+            } else {
+                // Wrong Sort classification
+                playSound('error');
+                cardEl.classList.add('shake', 'bg-rose-100', 'border-rose-500');
+                
+                setTimeout(() => {
+                    cardEl.classList.remove('shake', 'bg-rose-100', 'border-rose-500');
+                }, 500);
+            }
+        }
+
+        function completeTask2() {
+            if (!state.tasksCompleted.task2) {
+                state.tasksCompleted.task2 = true;
+                addScore(50);
+                updateLobbyBadges();
+            }
+            showScreen('lobby-screen');
+            triggerConfetti();
+        }
+
+
+        // ==========================================
+        // GAME 3: PRONOUN FILL IN THE BLANKS CONTROLLERS
+        // ==========================================
+        function startTask3() {
+            state.t3CurrentIndex = 0;
+            state.t3UserAnswers = [];
+            
+            showScreen('task3-screen');
+            renderPronounQuestion();
+        }
+
+        function renderPronounQuestion() {
+            const currentQuestion = task3Data[state.t3CurrentIndex];
+            
+            // Render sentence
+            document.getElementById('pronoun-progress').innerText = `${state.t3CurrentIndex + 1}/${task3Data.length}`;
+            
+            // Format blank replacement placeholder
+            const blankedSentence = currentQuestion.sentence.replace('______', '<span class="bg-indigo-100 text-indigo-700 px-3 py-1 mx-1 border border-indigo-200 rounded-lg text-lg inline-block font-black animate-pulse">[ ? ]</span>');
+            document.getElementById('pronoun-sentence').innerHTML = blankedSentence;
+
+            // Render option grids
+            const optionsContainer = document.getElementById('pronoun-options');
+            optionsContainer.innerHTML = '';
+
+            currentQuestion.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "bg-white hover:bg-indigo-50 border-2 border-slate-100 hover:border-indigo-200 text-slate-700 font-bold py-4 px-6 rounded-2xl shadow-sm transition-all text-base transform active:scale-95";
+                btn.innerText = opt;
+                btn.onclick = () => selectPronounAnswer(opt, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Reset navigation and message feedbacks
+            document.getElementById('pronoun-feedback').innerText = "請選出最適合的受格代名詞...";
+            document.getElementById('pronoun-feedback').className = "text-sm font-bold text-slate-400";
+            
+            const nextBtn = document.getElementById('pronoun-next-btn');
+            nextBtn.disabled = true;
+            nextBtn.className = "bg-slate-200 text-slate-400 font-bold py-3 px-6 rounded-2xl flex items-center gap-2 transition-all cursor-not-allowed";
+        }
+
+        function selectPronounAnswer(selectedOpt, buttonEl) {
+            const currentQuestion = task3Data[state.t3CurrentIndex];
+            const feedbackEl = document.getElementById('pronoun-feedback');
+            const nextBtn = document.getElementById('pronoun-next-btn');
+            const optionButtons = document.querySelectorAll('#pronoun-options button');
+
+            // Disable all option buttons to avoid duplicate clicks
+            optionButtons.forEach(btn => btn.disabled = true);
+
+            if (selectedOpt === currentQuestion.answer) {
+                // Correct!
+                playSound('success');
+                buttonEl.className = "bg-emerald-500 text-white border-2 border-emerald-500 font-bold py-4 px-6 rounded-2xl shadow-lg shadow-emerald-100 transition-all text-base correct-pop";
+                feedbackEl.innerHTML = `<span class="text-emerald-500 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> 太棒了，答案正確！</span>`;
+                
+                // Show completed text inside sentence
+                const filledSentence = currentQuestion.sentence.replace('______', `<span class="bg-emerald-500 text-white px-3 py-1 mx-1 border border-emerald-600 rounded-lg text-lg inline-block font-black correct-pop">${selectedOpt}</span>`);
+                document.getElementById('pronoun-sentence').innerHTML = filledSentence;
+
+            } else {
+                // Wrong!
+                playSound('error');
+                buttonEl.className = "bg-rose-500 text-white border-2 border-rose-500 font-bold py-4 px-6 rounded-2xl shadow-lg shadow-rose-100 transition-all text-base shake";
+                feedbackEl.innerHTML = `<span class="text-rose-500 flex items-center gap-1"><i class="fa-solid fa-circle-xmark"></i> 不對喔，再想想看！</span>`;
+                
+                // Highlight the correct answer as secondary green outline hint
+                optionButtons.forEach(btn => {
+                    if (btn.innerText === currentQuestion.answer) {
+                        btn.className = "bg-emerald-50 border-2 border-emerald-500 text-emerald-600 font-bold py-4 px-6 rounded-2xl transition-all text-base";
+                    }
+                });
+            }
+
+            // Enable "Next" button navigation
+            nextBtn.disabled = false;
+            nextBtn.className = "bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3 px-6 rounded-2xl flex items-center gap-2 transition-all shadow-md shadow-indigo-100 cursor-pointer";
+        }
+
+        function nextPronounQuestion() {
+            state.t3CurrentIndex++;
+            if (state.t3CurrentIndex < task3Data.length) {
+                renderPronounQuestion();
+            } else {
+                // Complete task 3!
+                if (!state.tasksCompleted.task3) {
+                    state.tasksCompleted.task3 = true;
+                    addScore(50);
+                    updateLobbyBadges();
+                }
+                showScreen('lobby-screen');
+                triggerConfetti();
+            }
+        }
+
+
+        // ==========================================
+        // GAME 4: GLOBAL TRANSIT QUIZ CONTROLLERS
+        // ==========================================
+        function startTask4() {
+            state.t4CurrentIndex = 0;
+            state.t4UserAnswers = [];
+            
+            showScreen('task4-screen');
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const currentQuestion = task4Data[state.t4CurrentIndex];
+            
+            // Display progress
+            document.getElementById('quiz-progress').innerText = `${state.t4CurrentIndex + 1}/${task4Data.length}`;
+            document.getElementById('quiz-question').innerText = currentQuestion.question;
+
+            // Render multiple choice options vertically
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+
+            currentQuestion.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-white hover:bg-purple-50 border-2 border-slate-100 hover:border-purple-200 text-slate-700 font-bold py-4 px-5 rounded-2xl shadow-sm transition-all text-sm flex items-center justify-between group transform active:scale-95";
+                btn.innerHTML = `<span>${opt}</span> <i class="fa-regular fa-circle text-slate-300 group-hover:text-purple-400 transition-colors"></i>`;
+                btn.onclick = () => selectQuizAnswer(opt, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Clear feedback text
+            document.getElementById('quiz-feedback').innerText = "請根據加拿大與瑞士的文化常識做出最佳選擇...";
+            document.getElementById('quiz-feedback').className = "text-sm font-bold text-slate-400";
+            
+            const nextBtn = document.getElementById('quiz-next-btn');
+            nextBtn.disabled = true;
+            nextBtn.className = "bg-slate-200 text-slate-400 font-bold py-3 px-6 rounded-2xl flex items-center gap-2 transition-all cursor-not-allowed";
+        }
+
+        function selectQuizAnswer(selectedOpt, buttonEl) {
+            const currentQuestion = task4Data[state.t4CurrentIndex];
+            const feedbackEl = document.getElementById('quiz-feedback');
+            const nextBtn = document.getElementById('quiz-next-btn');
+            const optionButtons = document.querySelectorAll('#quiz-options button');
+
+            optionButtons.forEach(btn => btn.disabled = true);
+
+            if (selectedOpt === currentQuestion.answer) {
+                playSound('success');
+                buttonEl.className = "w-full text-left bg-emerald-500 border-2 border-emerald-500 text-white font-bold py-4 px-5 rounded-2xl shadow-lg shadow-emerald-100 transition-all text-sm flex items-center justify-between correct-pop";
+                buttonEl.innerHTML = `<span>${selectedOpt}</span> <i class="fa-solid fa-circle-check"></i>`;
+                feedbackEl.innerHTML = `<span class="text-emerald-500 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> 答對了！你對這個通勤常識非常了解。</span>`;
+            } else {
+                playSound('error');
+                buttonEl.className = "w-full text-left bg-rose-500 border-2 border-rose-500 text-white font-bold py-4 px-5 rounded-2xl shadow-lg shadow-rose-100 transition-all text-sm flex items-center justify-between shake";
+                buttonEl.innerHTML = `<span>${selectedOpt}</span> <i class="fa-solid fa-circle-xmark"></i>`;
+                feedbackEl.innerHTML = `<span class="text-rose-500 flex items-center gap-1"><i class="fa-solid fa-circle-xmark"></i> 答錯囉！課文寫的是正確答案喔。</span>`;
+                
+                // Outline highlight the correct answer
+                optionButtons.forEach(btn => {
+                    const textSpan = btn.querySelector('span');
+                    if (textSpan && textSpan.innerText === currentQuestion.answer) {
+                        btn.className = "w-full text-left bg-emerald-50 border-2 border-emerald-500 text-emerald-600 font-bold py-4 px-5 rounded-2xl transition-all text-sm flex items-center justify-between";
+                        btn.innerHTML = `<span>${currentQuestion.answer}</span> <i class="fa-regular fa-circle-check text-emerald-500"></i>`;
+                    }
+                });
+            }
+
+            nextBtn.disabled = false;
+            nextBtn.className = "bg-purple-600 hover:bg-purple-700 text-white font-extrabold py-3 px-6 rounded-2xl flex items-center gap-2 transition-all shadow-md shadow-purple-100 cursor-pointer";
+        }
+
+        function nextQuizQuestion() {
+            state.t4CurrentIndex++;
+            if (state.t4CurrentIndex < task4Data.length) {
+                renderQuizQuestion();
+            } else {
+                // Complete task 4!
+                if (!state.tasksCompleted.task4) {
+                    state.tasksCompleted.task4 = true;
+                    addScore(50);
+                    updateLobbyBadges();
+                }
+                showScreen('lobby-screen');
+                triggerConfetti();
+            }
+        }
+
+
+        // ==========================================
+        // SCORE & PROGRESS UTILITIES
+        // ==========================================
+        function addScore(amount) {
+            state.score += amount;
+            document.getElementById('total-score').innerText = state.score;
+        }
+
+        function updateLobbyBadges() {
+            // Task 1
+            const badge1 = document.getElementById('badge-task1');
+            if (state.tasksCompleted.task1) {
+                badge1.className = "bg-sky-100 text-sky-700 text-xs font-black px-3 py-1 rounded-full flex items-center gap-1";
+                badge1.innerHTML = `<i class="fa-solid fa-circle-check"></i> 已通關`;
+            } else {
+                badge1.className = "bg-slate-100 text-slate-400 text-xs font-bold px-3 py-1 rounded-full";
+                badge1.innerHTML = `<i class="fa-regular fa-circle-play mr-1"></i> 未開始`;
+            }
+
+            // Task 2
+            const badge2 = document.getElementById('badge-task2');
+            if (state.tasksCompleted.task2) {
+                badge2.className = "bg-emerald-100 text-emerald-700 text-xs font-black px-3 py-1 rounded-full flex items-center gap-1";
+                badge2.innerHTML = `<i class="fa-solid fa-circle-check"></i> 已通關`;
+            } else {
+                badge2.className = "bg-slate-100 text-slate-400 text-xs font-bold px-3 py-1 rounded-full";
+                badge2.innerHTML = `<i class="fa-regular fa-circle-play mr-1"></i> 未開始`;
+            }
+
+            // Task 3
+            const badge3 = document.getElementById('badge-task3');
+            if (state.tasksCompleted.task3) {
+                badge3.className = "bg-pink-100 text-pink-700 text-xs font-black px-3 py-1 rounded-full flex items-center gap-1";
+                badge3.innerHTML = `<i class="fa-solid fa-circle-check"></i> 已通關`;
+            } else {
+                badge3.className = "bg-slate-100 text-slate-400 text-xs font-bold px-3 py-1 rounded-full";
+                badge3.innerHTML = `<i class="fa-regular fa-circle-play mr-1"></i> 未開始`;
+            }
+
+            // Task 4
+            const badge4 = document.getElementById('badge-task4');
+            if (state.tasksCompleted.task4) {
+                badge4.className = "bg-purple-100 text-purple-700 text-xs font-black px-3 py-1 rounded-full flex items-center gap-1";
+                badge4.innerHTML = `<i class="fa-solid fa-circle-check"></i> 已通關`;
+            } else {
+                badge4.className = "bg-slate-100 text-slate-400 text-xs font-bold px-3 py-1 rounded-full";
+                badge4.innerHTML = `<i class="fa-regular fa-circle-play mr-1"></i> 未開始`;
+            }
+
+            // Master Award Trophy Area Unlock check
+            const allDone = state.tasksCompleted.task1 && state.tasksCompleted.task2 && state.tasksCompleted.task3 && state.tasksCompleted.task4;
+            const trophyContainer = document.getElementById('trophy-container');
+            const claimBtn = document.getElementById('claim-btn');
+
+            if (allDone) {
+                trophyContainer.classList.remove('opacity-50', 'filter', 'grayscale');
+                claimBtn.disabled = false;
+                claimBtn.innerHTML = `<i class="fa-solid fa-crown mr-1"></i> 領取證書`;
+                claimBtn.className = "bg-white text-orange-600 hover:bg-yellow-100 font-extrabold text-sm px-6 py-3 rounded-2xl shadow-lg transition-all transform hover:scale-105 active:scale-95 cursor-pointer cursor-pointer";
+            } else {
+                trophyContainer.classList.add('opacity-50', 'filter', 'grayscale');
+                claimBtn.disabled = true;
+                claimBtn.innerHTML = `<i class="fa-solid fa-lock mr-1"></i> 尚未解鎖`;
+                claimBtn.className = "bg-white text-orange-600 hover:bg-amber-100 font-extrabold text-sm px-6 py-3 rounded-2xl shadow-md transition-all duration-300 transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed";
+            }
+        }
+
+        function claimReward() {
+            playSound('victory');
+            showScreen('reward-screen');
+            triggerConfetti();
+        }
+
+        function resetGameProgress() {
+            state.score = 0;
+            state.tasksCompleted.task1 = false;
+            state.tasksCompleted.task2 = false;
+            state.tasksCompleted.task3 = false;
+            state.tasksCompleted.task4 = false;
+            
+            document.getElementById('total-score').innerText = state.score;
+            updateLobbyBadges();
+            showScreen('lobby-screen');
+        }
+
+
+        // ==========================================
+        // CANVAS CONFETTI PARTICLE SYSTEM (Zero external dependency)
+        // ==========================================
+        let animationFrameId = null;
+        function triggerConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            // Resize canvas to match screen/container size
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            const particles = [];
+            const colors = ['#00D2FC', '#00F5D4', '#FEE440', '#F15BB5', '#9B5DE5'];
+
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * -canvas.height - 20,
+                    size: Math.random() * 8 + 6,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedY: Math.random() * 3 + 2,
+                    speedX: Math.random() * 2 - 1,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: Math.random() * 4 - 2
+                });
+            }
+
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            function update() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let alive = false;
+
+                particles.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += p.rotationSpeed;
+
+                    if (p.y < canvas.height) {
+                        alive = true;
+                    }
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+                });
+
+                if (alive) {
+                    animationFrameId = requestAnimationFrame(update);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+
+            update();
+        }
+
+        // Run setup on load
+        window.onload = function() {
+            updateLobbyBadges();
+        };
+    </script>
+</body>
+</html>
